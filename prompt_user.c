@@ -47,12 +47,12 @@ char *get_args(char *line, int *exe_ret)
 }
 
 /**
- * @front: A double pointer to the beginning of args
- * @call_args - partitions operators from commands and calls them
- * @exe_ret: The return value of the parent process' last excuted command
- * @args: array of arguments
+ * call_args - Partitions operators from commands and calls them.
+ * @args: An array of arguments.
+ * @front: A double pointer to the beginning of args.
+ * @exe_ret: The return value of the parent process' last executed command.
  *
- * Return: return value of the last executed command
+ * Return: The return value of the last executed command.
  */
 
 int call_args(char **args, char **front, int *exe_ret)
@@ -106,12 +106,12 @@ int call_args(char **args, char **front, int *exe_ret)
 }
 
 /**
- * @exe_ret: The return value of the parent process' last executed command
- * @args: array of arguments
- * run_args - calls the execution of a command
- * @front: a double pointer to the beginning of args
+ * run_args - Calls the execution of a command.
+ * @args: An array of arguments.
+ * @front: A double pointer to the beginning of args.
+ * @exe_ret: The return value of the parent process' last executed command.
  *
- * Return: return value of the last executed command
+ * Return: The return value of the last executed command.
  */
 int run_args(char **args, char **front, int *exe_ret)
 {
@@ -142,12 +142,12 @@ int run_args(char **args, char **front, int *exe_ret)
 }
 
 /**
- * @exe_ret: The return the value of the parent process' last executed command
- * handle_args: a function that gets, calls and runs the execution of a command
+ * handle_args - Gets, calls, and runs the execution of a command.
+ * @exe_ret: The return value of the parent process' last executed command.
  *
- * Return: if an end-of-file is read - END_OF_FILE (-2)
- * If the input cannot be tokenised - -1
- * O/w - the exit value of the last executed command
+ * Return: If an end-of-file is read - END_OF_FILE (-2).
+ *         If the input cannot be tokenized - -1.
+ *         O/w - The exit value of the last executed command.
  */
 int handle_args(int *exe_ret)
 {
