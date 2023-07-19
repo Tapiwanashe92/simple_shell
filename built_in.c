@@ -1,19 +1,19 @@
-/**
+/*
  * File: built_in.c
- *
+ * Authors: Tapiwanashe Kuwana and Sebastian Madzivanzira
  */
 #include "shell.h"
 int (*get_builtin(char *command))(char **args, char **front);
-int shellby_exit(char **args, cahr **front);
+int shellby_exit(char **args, char **front);
 int shellby_cd(char **args, char __attribute__((__unused__)) **front);
 int shellby_help(char **args, char __attribute__((__unused__)) **front);
 
 /**
- * @command: the command to match
- * get_builtin - matches a command with corresponding shellby builtin function
+ * get_builtin - Matches a command with a corresponding
+ *               shellby builtin function.
+ * @command: The command to match.
  *
- * Return: a function pointer to the corresponding builtin
- *
+ * Return: A function pointer to the corresponding builtin.
  */
 int (*get_builtin(char *command))(char **args, char **front)
 {
@@ -25,46 +25,46 @@ int (*get_builtin(char *command))(char **args, char **front)
 		{ "cd", shellby_cd },
 		{ "alias", shellby_alias },
 		{ "help", shellby_help },
-		{ NULL, NULL}
+		{ NULL, NULL }
 	};
-	int a:
+	int i;
 
-		for (a = 0; finction[a].name; a++)
-		{
-			if (_strcmp(funcs[a].name, command) == 0)
-				break;
-		}
-	return (funcs[a].f);
+	for (i = 0; funcs[i].name; i++)
+	{
+		if (_strcmp(funcs[i].name, command) == 0)
+			break;
+	}
+	return (funcs[i].f);
 }
 
 /**
- * @front: a double pointer to the beginning of args
- * @args: an array of arguments containing the exit value
- * shellby_exit - causes normal process termination for shellby shell
+ * shellby_exit - Causes normal process termination
+ *                for the shellby shell.
+ * @args: An array of arguments containing the exit value.
+ * @front: A double pointer to the beginning of args.
  *
- * Return: if there are no arguments - -3
- * if the given exit value is invalid -2
- * O/w - exits with the given status value
+ * Return: If there are no arguments - -3.
+ *         If the given exit value is invalid - 2.
+ *         O/w - exits with the given status value.
  *
- * Description: upon returning -3, the program exits back in the main function
- *
+ * Description: Upon returning -3, the program exits back in the main function.
  */
 int shellby_exit(char **args, char **front)
 {
-	int a, len_of_int = 10;
+	int i, len_of_int = 10;
 	unsigned int num = 0, max = 1 << (sizeof(int) * 8 - 1);
 
 	if (args[0])
 	{
 		if (args[0][0] == '+')
 		{
-			a = 1;
+			i = 1;
 			len_of_int++;
 		}
-		for (; args[0][a]; a++)
+		for (; args[0][i]; i++)
 		{
-			if (a <= len_of_int && args[0][a] >= '0' && args[0][a] <= '9')
-				num = (num * 10) + (args[0][a] - '0');
+			if (i <= len_of_int && args[0][i] >= '0' && args[0][i] <= '9')
+				num = (num * 10) + (args[0][i] - '0');
 			else
 				return (create_error(--args, 2));
 		}
@@ -83,7 +83,7 @@ int shellby_exit(char **args, char **front)
 }
 
 /**
-* shellby_cd - Changes the current directory of the shellby process.
+ * shellby_cd - Changes the current directory of the shellby process.
  * @args: An array of arguments.
  * @front: A double pointer to the beginning of args.
  *
