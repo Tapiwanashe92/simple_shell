@@ -105,10 +105,10 @@ switch (err)
 		error = error_127(args);
 		break;
 }
-write(STDERR_FILENO, error, _strlen(error));
+write(STDERR_FILENO, error, str_len(error));
 
 if (error)
-	free(error);
-	return (err);
+free(error);
+return (err);
 
 	}
