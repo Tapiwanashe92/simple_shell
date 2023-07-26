@@ -39,15 +39,15 @@ int execute(char **args, char **front)
 	if (command[0] != '/' && command[0] != '.')
 	{
 		flag = 1;
-		command = get_location(command);
+		command = path_location(command);
 	}
 
-	if (!command || (acess(command, F_OK) == -1))
+	if (!command || (access(command, F_OK) == -1))
 	{
 		if (errno == EACCES)
-			ret = (create_error(args, 126));
+			ret = (write_error(args, 126));
 		else
-			ret = (create_error(args, 127));
+			ret = (write_error(args, 127));
 	}
 	else
 	{
@@ -63,9 +63,9 @@ int execute(char **args, char **front)
 		{
 			execve(command, args, environ);
 			if (errno == EACCES)
-				ret = (create_error(args, 126));
+				ret = (write_error(args, 126));
 			free_env();
-			free_args(args, front);
+			free_arg(args, front);
 			free_alias_list(aliases);
 			_exit(ret);
 		}
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
 	if (argc != 1)
 	{
-		ret = proc_file_commands(argv[1], exe_ret);
+		ret = file_commands(argv[1], exe_ret);
 		free_env();
 		free_alias_list(aliases);
 		return (*exe_ret);
@@ -127,14 +127,14 @@ int main(int argc, char *argv[])
 		if (ret == END_OF_FILE || ret == EXIT)
 		{
 			if (ret == END_OF_FILE)
-				write(STOUT_FILENO, new_line, 1);
+				write(STDOUT_FILENO, new_line, 1);
 			free_env();
-			free_aliases_list(aliases);
+			free_alias_list(aliases);
 			exit(*exe_ret);
 		}
 	}
 
 	free_env();
-	free_aliases_list(aliases);
+	free_alias_list(aliases);
 	return (*exe_ret);
 }

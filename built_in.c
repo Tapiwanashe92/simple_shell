@@ -19,9 +19,9 @@ int (*get_builtin(char *command))(char **args, char **front)
 {
 	builtin_t funcs[] = {
 		{ "exit", shellby_exit },
-		{ "env", shellby_env },
-		{ "setenv", shellby_setenv },
-		{ "unsetenv", shellby_unsetenv },
+		{ "env", shell_env },
+		{ "setenv", shell_set_env },
+		{ "unsetenv", shell_unset_env },
 		{ "cd", shellby_cd },
 		{ "alias", shellby_alias },
 		{ "help", shellby_help },
@@ -31,7 +31,7 @@ int (*get_builtin(char *command))(char **args, char **front)
 
 	for (i = 0; funcs[i].name; i++)
 	{
-		if (_strcmp(funcs[i].name, command) == 0)
+		if (str_cmp(funcs[i].name, command) == 0)
 			break;
 	}
 	return (funcs[i].f);
@@ -66,7 +66,7 @@ int shellby_exit(char **args, char **front)
 			if (i <= len_of_int && args[0][i] >= '0' && args[0][i] <= '9')
 				num = (num * 10) + (args[0][i] - '0');
 			else
-				return (create_error(--args, 2));
+				return (write_error(--args, 2));
 		}
 	}
 	else
@@ -74,9 +74,9 @@ int shellby_exit(char **args, char **front)
 		return (-3);
 	}
 	if (num > max - 1)
-		return (create_error(--args, 2));
+		return (write_error(--args, 2));
 	args -= 1;
-	free_args(args, front);
+	free_arg(args, front);
 	free_env();
 	free_alias_list(aliases);
 	exit(num);
@@ -103,7 +103,7 @@ int shellby_cd(char **args, char __attribute__((__unused__)) **front)
 
 	if (args[0])
 	{
-		if (*(args[0]) == '-' || _strcmp(args[0], "--") == 0)
+		if (*(args[0]) == '-' || str_cmp(args[0], "--") == 0)
 		{
 			if ((args[0][1] == '-' && args[0][2] == '\0') ||
 					args[0][1] == '\0')
@@ -114,7 +114,7 @@ int shellby_cd(char **args, char __attribute__((__unused__)) **front)
 			else
 			{
 				free(oldpwd);
-				return (create_error(args, 2));
+				return (write_error(args, 2));
 			}
 		}
 		else
@@ -125,7 +125,7 @@ int shellby_cd(char **args, char __attribute__((__unused__)) **front)
 			else
 			{
 				free(oldpwd);
-				return (create_error(args, 2));
+				return (write_error(args, 2));
 			}
 		}
 	}
@@ -145,16 +145,16 @@ int shellby_cd(char **args, char __attribute__((__unused__)) **front)
 
 	dir_info[0] = "OLDPWD";
 	dir_info[1] = oldpwd;
-	if (shellby_setenv(dir_info, dir_info) == -1)
+	if (shell_set_env(dir_info, dir_info) == -1)
 		return (-1);
 
 	dir_info[0] = "PWD";
 	dir_info[1] = pwd;
-	if (shellby_setenv(dir_info, dir_info) == -1)
+	if (shell_set_env(dir_info, dir_info) == -1)
 		return (-1);
 	if (args[0] && args[0][0] == '-' && args[0][1] != '-')
 	{
-		write(STDOUT_FILENO, pwd, _strlen(pwd));
+		write(STDOUT_FILENO, pwd, str_len(pwd));
 		write(STDOUT_FILENO, new_line, 1);
 	}
 	free(oldpwd);
@@ -175,22 +175,22 @@ int shellby_help(char **args, char __attribute__((__unused__)) **front)
 {
 	if (!args[0])
 		help_all();
-	else if (_strcmp(args[0], "alias") == 0)
+	else if (str_cmp(args[0], "alias") == 0)
 		help_alias();
-	else if (_strcmp(args[0], "cd") == 0)
+	else if (str_cmp(args[0], "cd") == 0)
 		help_cd();
-	else if (_strcmp(args[0], "exit") == 0)
+	else if (str_cmp(args[0], "exit") == 0)
 		help_exit();
-	else if (_strcmp(args[0], "env") == 0)
+	else if (str_cmp(args[0], "env") == 0)
 		help_env();
-	else if (_strcmp(args[0], "setenv") == 0)
+	else if (str_cmp(args[0], "setenv") == 0)
 		help_setenv();
-	else if (_strcmp(args[0], "unsetenv") == 0)
+	else if (str_cmp(args[0], "unsetenv") == 0)
 		help_unsetenv();
-	else if (_strcmp(args[0], "help") == 0)
+	else if (str_cmp(args[0], "help") == 0)
 		help_help();
 	else
-		write(STDERR_FILENO, name, _strlen(name));
+		write(STDERR_FILENO, name, str_len(name));
 
 	return (0);
 }

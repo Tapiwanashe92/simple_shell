@@ -8,7 +8,7 @@
 char *get_args(char *line, int *exe_ret);
 int call_args(char **args, char **front, int *exe_ret);
 int run_args(char **args, char **front, int *exe_ret);
-int handle_args(char **args);
+int handle_args(int *exe_ret);
 
 /**
  * get_args - takes a command from standard input
@@ -40,7 +40,7 @@ char *get_args(char *line, int *exe_ret)
 	}
 
 	line[read - 1] = '\0';
-	variable_replacement(&line, exe_ret);
+	var_replacement(&line, exe_ret);
 	handle_line(&line, read);
 
 	return (line);
@@ -63,7 +63,7 @@ int call_args(char **args, char **front, int *exe_ret)
 		return (*exe_ret);
 	for (index = 0; args[index]; index++)
 	{
-		if (_strncmp(args[index], "||", 2) == 0)
+		if (strn_cmp(args[index], "||", 2) == 0)
 		{
 			free(args[index]);
 			args[index] = NULL;
@@ -81,7 +81,7 @@ int call_args(char **args, char **front, int *exe_ret)
 				return (ret);
 			}
 		}
-		else if (_strncmp(args[index], "&&", 2) == 0)
+		else if (strn_cmp(args[index], "&&", 2) == 0)
 		{
 			free(args[index]);
 			args[index] = NULL;
@@ -117,7 +117,7 @@ int run_args(char **args, char **front, int *exe_ret)
 {
 	int ret, x;
 
-	int (builtin)(char **args, char **front);
+	int (*builtin)(char **args, char **front);
 
 	builtin = get_builtin(args[0]);
 
@@ -158,21 +158,21 @@ int handle_args(int *exe_ret)
 	if (!line)
 		return (END_OF_FILE);
 
-	args = _strtok(line, " ");
+	args = str_tok(line, " ");
 	free(line);
 	if (!args)
 		return (ret);
 	if (check_args(args) != 0)
 	{
 		*exe_ret = 2;
-		free_args(args, args);
+		free_arg(args, args);
 		return (*exe_ret);
 	}
 	front = args;
 
 	for (index = 0; args[index]; index++)
 	{
-		if (_strncmp(args[index], ";", 1) == 0)
+		if (strn_cmp(args[index], ";", 1) == 0)
 		{
 			free(args[index]);
 			args[index] = NULL;
@@ -206,10 +206,10 @@ int check_args(char **args)
 		if (cur[0] == ';' || cur[0] == '&' || cur[0] == '|')
 		{
 			if (i == 0 || cur[1] == ';')
-				return (create_error(&args[i], 2));
+				return (write_error(&args[i], 2));
 			nex = args[i + 1];
 			if (nex && (nex[0] == ';' || nex[0] == '&' || nex[0] == '|'))
-				return (create_error(&args[i + 1], 2));
+				return (write_error(&args[i + 1], 2));
 		}
 	}
 	return (0);
