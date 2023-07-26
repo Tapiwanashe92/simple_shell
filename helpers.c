@@ -1,7 +1,7 @@
 #include "shell.h"
 
 void handle_line(char **line, ssize_t read);
-ssize_t get_len(char *line);
+ssize_t get_length(char *line);
 void logical_ops(char *line, ssize_t *new_len);
 
 /**
@@ -20,7 +20,7 @@ void handle_line(char **line, ssize_t read)
 	size_t j, k;
 	ssize_t new_length;
 
-	new_length = get_len(*line);
+	new_length = get_length(*line);
 	if (new_length == read - 1)
 		return;
 	new_line = malloc(new_length + 1);
